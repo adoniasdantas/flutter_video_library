@@ -12,22 +12,7 @@ class MazeRepository {
       List<TvShow> showList = [];
       for (var series in data) {
         final showMap = series['show'];
-        final image = showMap['image'] != null
-            ? (showMap['image'] as Map<String, dynamic>)['medium']
-            : "";
-        final show = TvShow(
-          id: showMap['id'].toString(),
-          name: showMap['name'],
-          poster: image,
-          days: (showMap['schedule']['days'] as List<dynamic>)
-              .map((day) => day.toString())
-              .toList(),
-          time: showMap['schedule']['time'],
-          genres: (showMap['genres'] as List<dynamic>)
-              .map<String>((genre) => genre.toString())
-              .toList(),
-          summary: showMap['summary'],
-        );
+        final show = TvShow.fromJson(showMap);
         showList.add(show);
       }
       return showList;
@@ -41,38 +26,7 @@ class MazeRepository {
           await Dio().get('https://api.tvmaze.com/shows/$id?embed=episodes');
       if (result.statusCode == 200) {
         final data = Map<String, dynamic>.from(result.data);
-        final poster = data['image'] != null
-            ? (data['image'] as Map<String, dynamic>)['medium']
-            : "";
-        final show = TvShow(
-          name: data['name'],
-          id: id,
-          poster: poster,
-          genres: (data['genres'] as List<dynamic>)
-              .map<String>((genre) => genre.toString())
-              .toList(),
-          summary: data['summary'],
-          days: (data['schedule']['days'] as List<dynamic>)
-              .map((day) => day.toString())
-              .toList(),
-          time: data['schedule']['time'],
-          episodes:
-              (data['_embedded']['episodes'] as List<dynamic>).map((episode) {
-            final episodeData = episode as Map<String, dynamic>;
-            final image = episodeData['image'] != null
-                ? episodeData['image']['medium']
-                : "";
-
-            return Episode(
-              id: episodeData['id'].toString(),
-              name: episodeData['name'],
-              number: episodeData['number'].toString(),
-              season: episodeData['season'].toString(),
-              image: image,
-              summary: episodeData['summary'] ?? "",
-            );
-          }).toList(),
-        );
+        final show = TvShow.withEpisodesFromJson(data);
         return show;
       } else {
         throw Exception();
@@ -87,14 +41,7 @@ class MazeRepository {
       final result = await Dio().get('https://api.tvmaze.com/episodes/$id');
       if (result.statusCode == 200) {
         final data = Map<String, dynamic>.from(result.data);
-        final image = data['image'] != null ? data['image']['medium'] : "";
-        final episode = Episode(
-          name: data['name'],
-          number: data['number'].toString(),
-          season: data['season'].toString(),
-          image: image,
-          summary: data['summary'] ?? "",
-        );
+        final episode = Episode.fromJson(data);
         return episode;
       } else {
         throw Exception();
@@ -112,19 +59,7 @@ class MazeRepository {
       List<Person> peopleList = [];
       for (var series in data) {
         final personMap = series['person'] as Map<String, dynamic>;
-        final image = personMap['image'] != null
-            ? (personMap['image'] as Map<String, dynamic>)['medium']
-            : "";
-        final country = personMap['country'] != null
-            ? (personMap['country'] as Map<String, dynamic>)['name']
-            : "";
-        final person = Person(
-          id: personMap['id'].toString(),
-          name: personMap['name'],
-          image: image,
-          country: country,
-          birthday: personMap['birthday'] ?? "",
-        );
+        final person = Person.fromJson(personMap);
         peopleList.add(person);
       }
       return peopleList;
@@ -137,19 +72,7 @@ class MazeRepository {
       final result = await Dio().get('https://api.tvmaze.com/people/$id');
       if (result.statusCode == 200) {
         final data = Map<String, dynamic>.from(result.data);
-        final image = data['image'] != null
-            ? (data['image'] as Map<String, dynamic>)['medium']
-            : "";
-        final country = data['country'] != null
-            ? (data['country'] as Map<String, dynamic>)['name']
-            : "";
-        final person = Person(
-          name: data['name'],
-          id: id,
-          image: image,
-          country: country,
-          birthday: data['birthday'] ?? "",
-        );
+        final person = Person.fromJson(data);
         return person;
       } else {
         throw Exception();

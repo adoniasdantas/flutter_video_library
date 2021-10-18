@@ -26,4 +26,33 @@ class TvShow {
     if (summary!.length > 50) return summary!.substring(0, 50);
     return summary!;
   }
+
+  factory TvShow.fromJson(Map<String, dynamic> json) {
+    final image = json['image'] != null
+        ? (json['image'] as Map<String, dynamic>)['medium']
+        : "";
+    final show = TvShow(
+      id: json['id'].toString(),
+      name: json['name'],
+      poster: image,
+      days: (json['schedule']['days'] as List<dynamic>)
+          .map((day) => day.toString())
+          .toList(),
+      time: json['schedule']['time'],
+      genres: (json['genres'] as List<dynamic>)
+          .map<String>((genre) => genre.toString())
+          .toList(),
+      summary: json['summary'],
+    );
+    return show;
+  }
+
+  factory TvShow.withEpisodesFromJson(Map<String, dynamic> json) {
+    final show = TvShow.fromJson(json);
+    show.episodes =
+        (json['_embedded']['episodes'] as List<dynamic>).map((episode) {
+      return Episode.fromJson(episode);
+    }).toList();
+    return show;
+  }
 }

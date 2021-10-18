@@ -20,4 +20,17 @@ class Episode {
     if (summary!.length > 50) return summary!.substring(0, 50);
     return summary!;
   }
+
+  factory Episode.fromJson(Map<String, dynamic> json) {
+    final image = json['image'] != null ? json['image']['medium'] : "";
+    final episode = Episode(
+      id: json['id'].toString(),
+      name: json['name'],
+      number: json['number'].toString(),
+      season: json['season'].toString(),
+      image: image,
+      summary: json['summary'] ?? "",
+    );
+    return episode;
+  }
 }
