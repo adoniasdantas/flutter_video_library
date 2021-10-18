@@ -6,6 +6,11 @@ import '../models/tv_show.dart';
 import '../repositories/maze_repository.dart';
 import '../widgets/tv_show_card.dart';
 
+enum SearchType {
+  pagination,
+  search,
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -17,16 +22,35 @@ class _HomePageState extends State<HomePage> {
   final searchController = TextEditingController();
   var shows = <TvShow>[];
   var loading = false;
-  List<String> favoritesTvShow = [];
+  int page = 1;
+  SearchType searchType = SearchType.pagination;
 
   @override
   void initState() {
     super.initState();
     loadFavoritesTvShows();
+    loadTvShowsPage(page);
   }
 
   Future<void> loadFavoritesTvShows() async {
     await FavoriteList.loadFavoritesTvShows();
+  }
+
+  Future<void> loadTvShowsPage(int index) async {
+    setState(() {
+      loading = true;
+    });
+    final newShowList = await MazeRepository.loadTvShowsPage(
+      index,
+    );
+    setState(() {
+      if (index > 1) {
+        shows += newShowList;
+      } else {
+        shows = newShowList;
+      }
+      loading = false;
+    });
   }
 
   @override
@@ -91,6 +115,7 @@ class _HomePageState extends State<HomePage> {
                         onPressed: () async {
                           setState(() {
                             loading = true;
+                            searchType = SearchType.search;
                             shows.clear();
                           });
                           final newShowList =
@@ -134,6 +159,19 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
+              if (searchType == SearchType.pagination)
+                ElevatedButton(
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: const [
+                      Icon(Icons.add),
+                      Text('Load more'),
+                    ],
+                  ),
+                  onPressed: () async {
+                    await loadTvShowsPage(++page);
+                  },
+                ),
             ],
           ),
         ),

@@ -4,6 +4,26 @@ import 'package:flutter_video_library/models/person.dart';
 import 'package:flutter_video_library/models/tv_show.dart';
 
 class MazeRepository {
+  static Future<List<TvShow>> loadTvShowsPage(int index) async {
+    try {
+      final result =
+          await Dio().get('https://api.tvmaze.com/shows?page=$index');
+      if (result.statusCode == 200) {
+        final data = result.data as List<dynamic>;
+        List<TvShow> showList = [];
+        for (var series in data) {
+          final show = TvShow.fromJson(series);
+          showList.add(show);
+        }
+        return showList;
+      } else {
+        return <TvShow>[];
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   static Future<List<TvShow>> searchTvShows(String searchText) async {
     final result =
         await Dio().get('https://api.tvmaze.com/search/shows?q=$searchText');
