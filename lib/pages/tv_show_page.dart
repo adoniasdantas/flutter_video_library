@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_video_library/external/favorite_storage.dart';
 
 import '../config/app_routes.dart';
 import '../models/tv_show.dart';
