@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'episode.dart';
 
 class TvShow {
@@ -54,5 +56,13 @@ class TvShow {
       return Episode.fromJson(episode);
     }).toList();
     return show;
+  }
+
+  String toJson() {
+    return jsonEncode({
+      'name': name,
+      'id': id,
+      'poster': poster,
+    });
   }
 }

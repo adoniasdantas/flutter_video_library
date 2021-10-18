@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_video_library/models/favorite_list.dart';
+import 'package:provider/provider.dart';
 
 import '../models/tv_show.dart';
 
@@ -6,15 +8,9 @@ class TvShowCard extends StatelessWidget {
   const TvShowCard({
     Key? key,
     required this.show,
-    required this.isFavorite,
-    required this.addToFavorites,
-    required this.removeFromFavorites,
   }) : super(key: key);
 
   final TvShow show;
-  final bool isFavorite;
-  final Function addToFavorites;
-  final Function removeFromFavorites;
 
   @override
   Widget build(BuildContext context) {
@@ -73,19 +69,22 @@ class TvShowCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () async {
-                        if (isFavorite) {
-                          removeFromFavorites(show.id!);
-                        } else {
-                          addToFavorites(show);
-                        }
-                      },
-                      icon: Icon(
-                        isFavorite ? Icons.star : Icons.star_outline,
-                        color: Colors.black,
-                      ),
-                    ),
+                    Consumer<FavoriteList>(builder: (context, list, child) {
+                      final isFavorite = list.tvShows.containsKey(show.id);
+                      return IconButton(
+                        onPressed: () async {
+                          if (isFavorite) {
+                            list.removeFromFavorites(show.id!);
+                          } else {
+                            list.addToFavorites(show);
+                          }
+                        },
+                        icon: Icon(
+                          isFavorite ? Icons.star : Icons.star_outline,
+                          color: Colors.black,
+                        ),
+                      );
+                    }),
                   ],
                 ),
                 Text('Genres: ${show.genres!.join(', ')}'),

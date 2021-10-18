@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_video_library/models/favorite_list.dart';
+import 'package:provider/provider.dart';
 
 import 'config/route_generator.dart';
 import 'pages/home_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => FavoriteList(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

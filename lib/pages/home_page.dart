@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_video_library/external/favorite_storage.dart';
 
 import '../config/app_routes.dart';
+import '../models/favorite_list.dart';
 import '../models/tv_show.dart';
 import '../repositories/maze_repository.dart';
 import '../widgets/tv_show_card.dart';
@@ -26,25 +26,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> loadFavoritesTvShows() async {
-    favoritesTvShow = await FavoriteStorage.loadFavorites();
-  }
-
-  Future<void> addToFavorites(TvShow show) async {
-    if (await FavoriteStorage.addToFavorites(show)) {
-      setState(() {
-        favoritesTvShow.add(show.id!);
-      });
-      loadFavoritesTvShows();
-    }
-  }
-
-  Future<void> removeFromFavorites(String id) async {
-    if (await FavoriteStorage.removeFromFavorites(id)) {
-      setState(() {
-        favoritesTvShow.remove(id);
-      });
-      loadFavoritesTvShows();
-    }
+    await FavoriteList.loadFavoritesTvShows();
   }
 
   @override
@@ -147,12 +129,7 @@ class _HomePageState extends State<HomePage> {
                           arguments: show.id,
                         );
                       },
-                      child: TvShowCard(
-                        show: show,
-                        isFavorite: favoritesTvShow.contains(show.id),
-                        addToFavorites: addToFavorites,
-                        removeFromFavorites: removeFromFavorites,
-                      ),
+                      child: TvShowCard(show: show),
                     );
                   },
                 ),

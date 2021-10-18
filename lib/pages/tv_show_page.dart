@@ -79,12 +79,7 @@ class _TvShowPageState extends State<TvShowPage> {
                 horizontal: 8.0,
                 vertical: 16,
               ),
-              child: TvShowCard(
-                show: show!,
-                isFavorite: false,
-                addToFavorites: FavoriteStorage.addToFavorites,
-                removeFromFavorites: FavoriteStorage.removeFromFavorites,
-              ),
+              child: TvShowCard(show: show!),
             ),
             if (show?.episodes != null && show!.episodes!.isNotEmpty)
               Expanded(

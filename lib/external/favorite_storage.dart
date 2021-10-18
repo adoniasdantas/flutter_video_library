@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class FavoriteStorage {
   static Future<bool> addToFavorites(TvShow show) async {
     final storage = await SharedPreferences.getInstance();
-    final result = await storage.setString(show.id!, show.name!);
+    final result = await storage.setString(show.id!, show.toJson());
     return result;
   }
 
@@ -18,8 +18,12 @@ class FavoriteStorage {
     return storage.containsKey(id);
   }
 
-  static Future<List<String>> loadFavorites() async {
+  static Future<Map<String, String>> loadFavorites() async {
     final storage = await SharedPreferences.getInstance();
-    return storage.getKeys().map((key) => key).toList();
+    Map<String, String> favorites = {};
+    for (var key in storage.getKeys()) {
+      favorites.putIfAbsent(key, () => storage.getString(key)!);
+    }
+    return favorites;
   }
 }
