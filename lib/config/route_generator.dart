@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../pages/episode_page.dart';
+import '../pages/favorites_page.dart';
 import '../pages/home_page.dart';
 import '../pages/person_page.dart';
 import '../pages/search_people.dart';
@@ -9,7 +10,6 @@ import 'app_routes.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    // Getting arguments passed in while calling Navigator.pushNamed
     final args = settings.arguments;
 
     switch (settings.name) {
@@ -31,7 +31,6 @@ class RouteGenerator {
         return _errorRoute();
 
       case AppRoutes.episodePage:
-        // Validation of correct data type
         if (args is String) {
           return MaterialPageRoute(
             builder: (_) => EpisodePage(
@@ -50,6 +49,10 @@ class RouteGenerator {
           );
         }
         return _errorRoute();
+
+      case AppRoutes.favoritesPage:
+        return MaterialPageRoute(builder: (_) => const FavoritesPage());
+
       default:
         return _errorRoute();
     }

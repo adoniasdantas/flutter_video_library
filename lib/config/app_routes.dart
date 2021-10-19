@@ -4,4 +4,5 @@ class AppRoutes {
   static const String episodePage = '/episode';
   static const String searchPeoplePage = '/search_people';
   static const String personPage = '/person';
+  static const String favoritesPage = '/favorites';
 }

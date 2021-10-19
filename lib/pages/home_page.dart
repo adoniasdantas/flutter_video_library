@@ -58,6 +58,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search Tv Show'),
+        leading: InkWell(
+          child: const Icon(Icons.star),
+          onTap: () {
+            Navigator.pushNamed(context, AppRoutes.favoritesPage);
+          },
+        ),
         actions: [
           Center(
             child: Padding(
